@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {% if refresh == 'on' %}
+    <meta http-equiv="refresh" content="36">
+    {% endif %}
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+        integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    {% if theme == "light" %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/journal/bootstrap.min.css"
+        integrity="sha384-QDSPDoVOoSWz2ypaRUidLmLYl4RyoBWI44iA5agn6jHegBxZkNqgm2eHb6yZ5bYs" crossorigin="anonymous">
+    {% else %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/cyborg/bootstrap.min.css"
+        integrity="sha384-nEnU7Ae+3lD52AK+RGNzgieBWMnEfgTbRHIwEvp1XXPdqdO6uLTd/NwXbzboqjc2" crossorigin="anonymous">
+    {% endif %}
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" type="text/css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+    <title>עיתונות</title>
+</head>
+
+<body>
+   
+    <nav id=nav dir="rtl" class="navbar navbar-expand-lg navbar-light bg-info fixed-top">
+        <a class="navbar-brand mr-5" href="{{ url_for('index') }}">
+            <h6 class="nse m-0">
+                <span class="text-primary nse-how">N</span>
+                <span class="text-success nse-how">S</span>
+                <span class="text-warning nse-how">E</span>
+            </h6>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div dir="ltr" class="collapse navbar-collapse" id="navbarSupportedContent">
+            <form id="switch" class="form-inline mr-2 mt-3 mt-sm-0 " method="post" dir="rtl">
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    {% if theme == 'cyborg' %}
+                    <label class="btn btn-info"  title="ערכת נושא בהירה">
+                        <input type="radio" name="theme" id="theme" autocomplete="off" value="light"
+                        onclick="document.getElementById('switch').submit();"><i class="fa fa-toggle-off"></i>
+                    </label>
+                    {% else %}
+                    <label class="btn btn-info" title="ערכת נושא כהה">
+                        <input type="radio" name="theme" id="theme" autocomplete="off" value="cyborg"
+                        onclick="document.getElementById('switch').submit();"><i class="fa fa-toggle-on"></i>
+                    </label>
+                    {% endif %}
+                </div>
+            </form>
+            <form id="refresh" class="form-inline mr-2 mt-3 mt-sm-0 " method="post" dir="rtl">
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    {% if refresh == 'off' %}
+                    <label class="btn btn-info" title="הפעלת רענון אוטומטי">
+                        <input type="radio" name="refresh" id="refresh" autocomplete="off" value="on"
+                            onclick="document.getElementById('refresh').submit();"><i class="fa fa-refresh"></i>
+                        </label>
+                    {% else %}
+                    <label class="btn btn-info"  title="ביטול רענון אוטומטי">
+                        <input type="radio" name="refresh" id="refresh" autocomplete="off" value="off"
+                            onclick="document.getElementById('refresh').submit();"><i class="fa fa-refresh fa-spin"></i>
+                    </label>
+                    {% endif %}
+                </div>
+            </form>
+            <a class="navbar-brand text-light float-right mt-2 mt-sm-0" href="{{ url_for('scopes') }}">
+                <h6 class="mb-0 ml-2">
+                    סקופים
+                </h6>
+            </a>
+            <br><br>
+            <a class="navbar-brand text-light float-right mt-2 mt-sm-0 " href="{{ url_for('news') }}">
+                <h6 class="mb-0 ml-2">
+                    {% if id %}
+                    לכל הכותרות
+                    {% else %}
+                    רענן עמוד
+                    {% endif %}
+                </h6>
+            </a>
+        </div>
+    </nav>
+
+    <div class="container" style="margin-top: 10vh;">
+        <div class="card-body d-flex flex-wrap justify-content-between align-items-center">
+            {% for source in sources|sort|unique %}
+            <a href={{ url_for('source_news', id=source) }} class="no-underline">
+                <h6 class="card-link mr-1 text-{{ 
+                    'primary' if id == source and theme == 'light'
+                    else 'warning' if id == source
+                    else 'secondary' 
+                    }}">
+                    {{ source }}
+                </h6>
+            </a>
+            {% endfor %}
+        </div>
+        <hr class="bg-secondary mt-0">
+        <div dir="rtl" class="row mt-5">
+            <div class="col-lg-6">
+                <div class="text-center mb-5">
+                    <{{ 'h3' if theme == 'light' else 'h4' }} class="text-info">
+                        {% if id %}
+                        כל הכותרות של 
+                            <span class="text-{{ 'primary' if theme == 'light' else 'warning' }}">
+                                {{ id }}
+                            </span>
+                        {% else %}
+                        סקירת כותרות העיתונות
+                        {% endif %}
+                    <{{ 'h3' if theme == 'light' else 'h4' }}/>
+                </div>
+                {% for n in news %}
+                <div class="card border-info text-right mb-2">
+                    <a href="{{ n.href }}" class="card-link text-dark" target="blank">
+                        <div class="card-header text-info">
+                            <small>
+                                {{ n.date }} - {{ n.source }}
+                            </small>
+                        </div>
+                        <div class="card-body">
+                            <h6 dir="rtl" class="card-text">
+                                {{ n.title|striptags }}
+                            </h6>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="col-lg-6">
+                <div class="text-center mb-5">
+                    <{{ 'h3' if theme == 'light' else 'h4' }} class="text-info">
+                        רדיו
+                        <{{ 'h3' if theme == 'light' else 'h4' }} />
+                </div>
+                <div class="rounded border border-info embed-responsive embed-responsive-16by9 mb-3">
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/5qap5aO4i9A" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+                </div>
+                <div class="rounded embed-responsive embed-responsive-5by4 mb-3">
+                    <iframe width="560" height="315" src="https://www.kan.org.il/radio/" frameborder="0"
+                        allow="accelerometer; autoplay; " scrolling="no" allowfullscreen></iframe>
+                </div>
+
+            </div>
+        </div>
+
+
+
+    </div>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

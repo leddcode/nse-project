@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {% if refresh == 'on' %}
+    <meta http-equiv="refresh" content="36">
+    {% endif %}
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+        integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    {% if theme == "light" %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/journal/bootstrap.min.css"
+        integrity="sha384-QDSPDoVOoSWz2ypaRUidLmLYl4RyoBWI44iA5agn6jHegBxZkNqgm2eHb6yZ5bYs" crossorigin="anonymous">
+    {% else %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/cyborg/bootstrap.min.css"
+        integrity="sha384-nEnU7Ae+3lD52AK+RGNzgieBWMnEfgTbRHIwEvp1XXPdqdO6uLTd/NwXbzboqjc2" crossorigin="anonymous">
+    {% endif %}
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" type="text/css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+    <title>סקופים</title>
+</head>
+
+<body>
+    <nav dir="rtl" class="navbar navbar-expand-lg navbar-light bg-info fixed-top">
+        <a class="navbar-brand mr-5" href="{{ url_for('index') }}">
+            <h6 class="nse m-0">
+                <span class="text-primary nse-how">N</span>
+                <span class="text-success nse-how">S</span>
+                <span class="text-warning nse-how">E</span>
+            </h6>
+        </a>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div dir="ltr" class="collapse navbar-collapse" id="navbarSupportedContent">    
+            <form class="form-inline mr-2 text-center mt-3 mt-sm-0 " method="post" dir="rtl">
+                <input dir="rtl" class="w-75 form-control mr-sm-2 bg-active" type="search" name="search_scope" placeholder="חיפוש סקופ" aria-label="Search" style="height:23px"> 
+                <i class="fa fa-search text-light fa-scope"></i>
+            </form>
+            <form id="switch" class="form-inline mr-2 mt-3 mt-sm-0 " method="post" dir="rtl">
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    {% if theme == 'cyborg' %}
+                    <label class="btn btn-info" title="ערכת נושא בהירה">
+                        <input type="radio" name="theme" id="theme" autocomplete="off" value="light"
+                            onclick="document.getElementById('switch').submit();"><i class="fa fa-toggle-off"></i>
+                    </label>
+                    {% else %}
+                    <label class="btn btn-info" title="ערכת נושא כהה">
+                        <input type="radio" name="theme" id="theme" autocomplete="off" value="cyborg"
+                            onclick="document.getElementById('switch').submit();"><i class="fa fa-toggle-on"></i>
+                    </label>
+                    {% endif %}
+                </div>
+            </form>
+            <form id="refresh" class="form-inline mr-2 mt-3 mt-sm-0 " method="post" dir="rtl">
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    {% if refresh == 'off' %}
+                    <label class="btn btn-info" title="הפעלת רענון אוטומטי">
+                        <input type="radio" name="refresh" id="refresh" autocomplete="off" value="on"
+                            onclick="document.getElementById('refresh').submit();"><i class="fa fa-refresh"></i>
+                    </label>
+                    {% else %}
+                    <label class="btn btn-info" title="ביטול רענון אוטומטי">
+                        <input type="radio" name="refresh" id="refresh" autocomplete="off" value="off"
+                            onclick="document.getElementById('refresh').submit();"><i class="fa fa-refresh fa-spin"></i>
+                    </label>
+                    {% endif %}
+                </div>
+            </form>
+            <a class="navbar-brand text-light float-right mt-2 mt-sm-0" href="{{ url_for('news') }}">
+                <h6 class="mb-0 ml-2">
+                    לסקירת עיתונות
+                </h6>
+            </a>
+            <br><br>
+            <a class="navbar-brand text-light float-right mt-2 mt-sm-0 " href="{{ url_for('scopes') }}">
+                <h6 class="mb-0 ml-2">
+                    {% if id %}
+                    לכל הסקופים
+                    {% else %}
+                    רענן עמוד
+                    {% endif %}
+                </h6>
+            </a>
+        </div>
+    </nav>
+    <div class="container" style="margin-top: 6rem;">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="bs-component">
+                    <div class="jumbotron border-info" style="border-style:solid;">
+                        <h1 class="display-3 text-center">
+                            חדשות בזמן אמת
+                        </h1>
+                        <p class="lead text-center">
+                            כל הידיעות מובאות מפורום הסקופים
+                            <a href="https://rotter.net/forum/listforum.php" class="text-info" target="blank">
+                               <b>רוטר.נט</b>
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container mt-2 text-right">
+        <div class="row">
+            <div class="col-lg-9">
+                {% for scope in scopes %}
+                <div class="card border-info mb-2">
+                    <a href="{{ scope.href }}" class="card-link text-dark" target="blank">
+                        <div class="card-header text-info">
+                            <small>
+                                {{ scope.date }}, {{ scope.time }} - {{ scope.author }}
+                            </small>
+                        </div>
+                        <div class="card-body">
+                            <h6 dir="rtl" class="card-text">
+                                {{ scope.text|striptags }}
+                            </h6>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="col-lg-3">
+                <div class="card border-success mb-2">
+                    <div class="card-header text-success">
+                        <small>
+                            <b>חברי הפורום</b>
+                        </small>
+                    </div>
+                    <div class="card-body d-flex flex-wrap justify-content-between align-items-center">
+                        {% for author in authors|sort|unique %}
+                        <a class="text-{{ 'info' if id == author else 'success' }}" href={{ url_for('author_posts', id=author) }}>
+                            <small class="card-link mr-1">
+                                {{ author }} 
+                            </small>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% if top %}
+                <div class="card border-{{ 'danger' if theme == 'light' else 'warning' }} mb-2">
+                    <div class="card-header text-{{ 'danger' if theme == 'light' else 'warning' }}">
+                        <small>
+                            <b>טרנדים</b> 
+                        </small>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                        {% for word in top %}
+                        <a class="text-{{ 'danger' if theme == 'light' else 'warning' }} no-underline" href={{ url_for('top_posts', id=word[0]) }}>
+                            <li class="list-group-item d-flex justify-content-between align-items-center border-0">
+                                <span class="badge badge-pill">{{ word[1] }}</span>
+                                {{ word[0] }}
+                            </li>
+                        </a>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script>
+        $('input[type=radio]').on('change', function () {
+            $(this).closest("form").submit();
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

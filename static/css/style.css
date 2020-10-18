@@ -1,0 +1,25 @@
+.form-control{
+    border-radius: 50px;
+}
+
+.fa-scope {
+    transform: translateX(25px);
+}
+
+
+.nse {
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+
+h6.nse:hover {
+    -webkit-transform: rotate(180deg);
+            transform: rotate(180deg);
+}
+
+.no-underline {
+  text-decoration: none !important;
+}
+
+.embed-responsive-5by4{
+   padding-bottom: 80%;
+}
