@@ -20,8 +20,3 @@ def process_search(search_query, search_period):
 
     r = requests.get(url)
     return r.json()['articles']
-
-
-aa = process_search("путин", 0)
-for a in aa:
-       print(a)
