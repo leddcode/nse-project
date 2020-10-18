@@ -25,14 +25,6 @@ h6.nse:hover {
 }
 
 .back-nse {
-    background-image: url("../images/inback.jpg");
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-}
-
-.back-result {
-    background-image: url("../images/result.jpg");
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;

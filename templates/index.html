@@ -21,7 +21,7 @@
     <title>News Search Engine</title>
 </head>
 
-<body class="{{ 'back-nse' if not articles else 'back-result'}}">
+<body class="back-nse" background="{{ url_for('static', filename='images/inback.jpg') if not articles else url_for('static', filename='images/result.jpg') }}">
     <nav dir="rtl" class="navbar navbar-expand-lg navbar-light fixed-top back-transparent">
         <a class="navbar-brand" href="{{ url_for('scopes') }}">
             <h6 class="m-0 {{ 'text-light' if not articles }}">
