@@ -15,7 +15,7 @@ def index():
         search_query = req.get('search')
         search_period = req.get('period')
         articles = process_search(search_query, search_period)
-        return render_template('index.html', articles=articles)
+        return render_template('index.html', articles=articles, search_query=search_query)
     return render_template('index.html')
 
 
