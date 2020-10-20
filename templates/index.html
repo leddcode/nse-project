@@ -89,6 +89,14 @@
                             </p>
                         </div>
                     {% endif %}
+                    {% for message in get_flashed_messages() %}
+                        <div class="alert alert-dismissible alert-danger">
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                            <p dir="rtl" class="text-center mb-0">
+                                {{ message }}
+                            </p>
+                        </div>
+                    {% endfor %}
                     <div class="card text-white border border-0 back-transparent">
                         <h1 class="display-1 text-center mt-4 nse">
                             <span class="text-primary">N</span>

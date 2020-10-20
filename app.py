@@ -1,7 +1,7 @@
 from search import process_search
 from scraper import get_scopes, filter_scopes, count_words, get_news
 
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, flash, render_template, request, redirect, url_for, session
 
 
 app = Flask(__name__)
@@ -14,8 +14,11 @@ def index():
         req = request.form
         search_query = req.get('search')
         search_period = req.get('period')
-        articles = process_search(search_query, search_period)
-        return render_template('index.html', articles=articles, search_query=search_query)
+        try:
+            articles = process_search(search_query, search_period)
+            return render_template('index.html', articles=articles, search_query=search_query)
+        except KeyError:
+            flash('יש להזין מילות חיפוש!')
     return render_template('index.html')
 
 
@@ -167,4 +170,4 @@ def source_news(id=None):
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
