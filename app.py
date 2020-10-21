@@ -1,7 +1,7 @@
+from scraper import count_words, filter_scopes, get_news, get_scopes
 from search import process_search
-from scraper import get_scopes, filter_scopes, count_words, get_news
 
-from flask import Flask, flash, render_template, request, redirect, url_for, session
+from flask import flash, Flask, render_template, request, session
 
 
 app = Flask(__name__)
@@ -24,9 +24,9 @@ def index():
 
 @app.route('/scopes', methods=["GET", "POST"])
 def scopes():
-    if not 'theme' in session:
+    if 'theme' not in session:
         session['theme'] = 'cyborg'
-    if not 'refresh' in session:
+    if 'refresh' not in session:
         session['refresh'] = 'off'
 
     scopes = get_scopes()
@@ -59,10 +59,10 @@ def scopes():
     return render_template('scopes.html', scopes=scopes, authors=authors, top=top_occurrences, theme=session.get('theme'), refresh=session.get('refresh'))
 
 
-@app.route('/scopes/author/<id>', methods=["GET", "POST"])
-def author_posts(id=None):
+@app.route('/scopes/author/<key>', methods=["GET", "POST"])
+def author_posts(key=None):
     scopes = get_scopes()
-    author_scopes = (scope for scope in scopes if scope['author'] == id)
+    author_scopes = (scope for scope in scopes if scope['author'] == key)
     authors = (scope['author'] for scope in scopes)
 
     theme = request.form.get("theme")
@@ -71,28 +71,28 @@ def author_posts(id=None):
     # POST request - theme switching
     if theme != session.get('theme') and theme is not None:
         session['theme'] = theme
-        return render_template('scopes.html', scopes=author_scopes, authors=authors, id=id, theme=theme, refresh=session.get('refresh'))
+        return render_template('scopes.html', scopes=author_scopes, authors=authors, key=key, theme=theme, refresh=session.get('refresh'))
 
     # POST request - refreshing
     if refresh != session.get('refresh') and refresh is not None:
         session['refresh'] = refresh
-        return render_template('scopes.html', scopes=author_scopes, authors=authors, id=id, theme=session.get('theme'), refresh=refresh)
+        return render_template('scopes.html', scopes=author_scopes, authors=authors, key=key, theme=session.get('theme'), refresh=refresh)
 
     # POST request - search
     if request.form.get("search_scope"):
         req = request.form
         search_query = req.get('search_scope')
         filtered_scopes = filter_scopes(search_query, author_scopes)
-        return render_template('scopes.html', scopes=filtered_scopes, authors=authors, id=id, theme=session.get('theme'), refresh=session.get('refresh'))
+        return render_template('scopes.html', scopes=filtered_scopes, authors=authors, key=key, theme=session.get('theme'), refresh=session.get('refresh'))
     
     # GET request
-    return render_template('scopes.html', scopes=author_scopes, authors=authors, id=id, theme=session.get('theme'), refresh=session.get('refresh'))
+    return render_template('scopes.html', scopes=author_scopes, authors=authors, key=key, theme=session.get('theme'), refresh=session.get('refresh'))
 
 
-@app.route('/scopes/top/<id>', methods=["GET", "POST"])
-def top_posts(id=None):
+@app.route('/scopes/top/<key>', methods=["GET", "POST"])
+def top_posts(key=None):
     scopes = get_scopes()
-    top_scopes = [scope for scope in scopes if id in scope["text"].split()]
+    top_scopes = [scope for scope in scopes if key in scope["text"].split()]
     authors = [scope['author'] for scope in scopes]
     top_occurrences = count_words(scopes)
 
@@ -114,17 +114,17 @@ def top_posts(id=None):
         req = request.form
         search_query = req.get('search_scope')
         filtered_scopes = filter_scopes(search_query, top_scopes)
-        return render_template('scopes.html', scopes=filtered_scopes, authors=authors, id=id, theme=session.get('theme'), refresh=session.get('refresh'))
+        return render_template('scopes.html', scopes=filtered_scopes, authors=authors, key=key, theme=session.get('theme'), refresh=session.get('refresh'))
 
     # GET request
-    return render_template('scopes.html', scopes=top_scopes, authors=authors, id=id, top=top_occurrences, theme=session.get('theme'), refresh=session.get('refresh'))
+    return render_template('scopes.html', scopes=top_scopes, authors=authors, key=key, top=top_occurrences, theme=session.get('theme'), refresh=session.get('refresh'))
 
 
 @app.route('/news', methods=["GET", "POST"])
 def news():
-    if not 'theme' in session:
+    if 'theme' not in session:
         session['theme'] = 'cyborg'
-    if not 'refresh' in session:
+    if 'refresh' not in session:
         session['refresh'] = 'off'
 
     news = get_news()
@@ -146,10 +146,10 @@ def news():
     return render_template('news.html', news=news, sources=sources, theme=session.get('theme'), refresh=session.get('refresh'))
 
 
-@app.route('/news/source/<id>', methods=["GET", "POST"])
-def source_news(id=None):
+@app.route('/news/source/<key>', methods=["GET", "POST"])
+def source_news(key=None):
     news = get_news()
-    filtered_news = (n for n in news if n['source'] == id)
+    filtered_news = (n for n in news if n['source'] == key)
     sources = (n['source'] for n in news)
 
     theme = request.form.get("theme")
@@ -158,15 +158,15 @@ def source_news(id=None):
     # POST request - theme switching
     if theme != session.get('theme') and theme is not None:
         session['theme'] = theme
-        return render_template('news.html', news=filtered_news, sources=sources, id=id, theme=theme, refresh=session.get('refresh'))
+        return render_template('news.html', news=filtered_news, sources=sources, key=key, theme=theme, refresh=session.get('refresh'))
 
     # POST request - refreshing
     if refresh != session.get('refresh') and refresh is not None:
         session['refresh'] = refresh
-        return render_template('news.html', news=filtered_news, sources=sources, id=id, theme=session.get('theme'), refresh=refresh)
+        return render_template('news.html', news=filtered_news, sources=sources, key=key, theme=session.get('theme'), refresh=refresh)
 
     # GET request
-    return render_template('news.html', news=filtered_news, sources=sources, id=id, theme=session.get('theme'), refresh=session.get('refresh'))
+    return render_template('news.html', news=filtered_news, sources=sources, key=key, theme=session.get('theme'), refresh=session.get('refresh'))
 
 
 if __name__ == "__main__":
