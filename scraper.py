@@ -4,6 +4,9 @@ from bs4 import BeautifulSoup
 import requests
 
 
+NOT_VALID = ['אחר', 'פני', 'יותר']
+
+
 def get_scopes():
     req = requests.get("https://rotter.net/forum/listforum.php")
     charset = req.encoding
@@ -48,11 +51,17 @@ def filter_scopes(search_query, scopes):
     return exect + possible
 
 
+def validate_word(word):
+    if any(elem in word for elem in NOT_VALID):
+        return False
+    return True
+
+
 def count_words(scopes):
     words = []
     for scope in scopes:
         words.extend(scope["text"].split())
-    c = Counter(word for word in words if word.isalpha() and len(word) > 3)
+    c = Counter(word for word in words if word.isalpha() and len(word) > 3 and validate_word(word))
     return c.most_common(10)
 
 

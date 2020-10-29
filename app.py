@@ -1,7 +1,7 @@
+from flask import flash, Flask, render_template, request, session
+
 from scraper import count_words, filter_scopes, get_news, get_scopes
 from search import process_search
-
-from flask import flash, Flask, render_template, request, session
 
 
 app = Flask(__name__)
