@@ -38,6 +38,11 @@
                 סקירת עיתונות
             </h6>
         </a>
+        <a class="text-light no-underline mr-3" href="https://t.me/nsengine"  target="blank">
+            <h6 class="m-0 {{ 'text-light' if not articles }}">
+                ערוץ טלגרם
+            </h6>
+        </a>
         {% if articles %}
         <a class="text-primary no-underline mr-3" href="{{ url_for('index') }}">
             <h6 class="m-0">

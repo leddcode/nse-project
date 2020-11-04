@@ -75,12 +75,6 @@
                     {% endif %}
                 </div>
             </form>
-            <a class="navbar-brand text-light float-right mt-2 mt-sm-0" href="{{ url_for('scopes') }}">
-                <h6 class="mb-0 ml-2">
-                    סקופים
-                </h6>
-            </a>
-            <br><br>
             <a class="navbar-brand text-light float-right mt-2 mt-sm-0 " href="{{ url_for('news') }}">
                 <h6 class="mb-0 ml-2">
                     {% if key %}
@@ -88,6 +82,18 @@
                     {% else %}
                     רענן עמוד
                     {% endif %}
+                </h6>
+            </a>
+            <br><br>
+            <a class="navbar-brand text-light float-right mt-2 mt-sm-0" href="{{ url_for('scopes') }}">
+                <h6 class="mb-0 ml-2">
+                    סקופים
+                </h6>
+            </a>
+            <br><br>
+            <a class="navbar-brand text-light float-right mt-2 mt-sm-0" href="https://t.me/nsengine" target="blank">
+                <h6 class="mb-0 ml-2">
+                    ערוץ טלגרם
                 </h6>
             </a>
         </div>
